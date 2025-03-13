@@ -127,7 +127,7 @@ Git provides several commands to get information about your project and reposito
 - Show the **status** of your working directory: `git status`
 - View the **commit history**: `git log` (use `q` to exit). Use `--oneline` option for a more concise view.
 - Show the differences between commits: `git diff <commit1> <commit2>`
-  
+ . 
 ## Adding or Removing Files
 
 To track new files or remove files from Git, use the following commands:

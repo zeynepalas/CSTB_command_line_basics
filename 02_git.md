@@ -106,11 +106,11 @@ The identifier `221ec6e` is the commit hash, the message `add git.md` describes 
 
 A diff is a comparison between two versions of the code. It shows the changes made between those versions, highlighting what was added, modified, or deleted.
 
-#Comment: look if it stay
-
 ### Using the Command Line
 
-#Comment: look if it stay
+```bash
+git diff <commit1> <commit2>
+```
 
 ### Using VSCode
 

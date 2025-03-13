@@ -100,8 +100,6 @@ The identifier `221ec6e` is the commit hash, the message `add git.md` describes 
 - **1 commit = 1 feature:** It is best practice to commit related changes together. For example, don't commit code that changes the layout of a website alongside code that adds a new feature.
 - **Descriptive commit messages:** Make sure your commit messages clearly describe what the changes are. A good commit message helps you and others understand what was done and why.
 
-#Comment: add pictures
-
 ## Diff
 
 A diff is a comparison between two versions of the code. It shows the changes made between those versions, highlighting what was added, modified, or deleted.
@@ -114,17 +112,20 @@ git diff <commit1> <commit2>
 
 ### Using VSCode
 
-#Comment: look if it stay
+In the `Source Control Graph` of `Source Control` panel, click on a commit. You can see the changes made to your files. The green lines represent additions, red lines represent deletions, and yellow lines represent modifications.
 
 ### On GitHub
-#Comment: look if it stay
+
+On GitHub, you can view the diff between two commits by going to the commit page and clicking on the "Files changed" tab. This will show you the changes made in that commit.
+
+You can also go to the "History" tab of a file to see the changes made to that file over time.
 
 ## Information Commands
 
 Git provides several commands to get information about your project and repository:
 
 - Show the **status** of your working directory: `git status`
-- View the **commit history**: `git log`
+- View the **commit history**: `git log` (use `q` to exit). Use `--oneline` option for a more concise view.
 - Show the differences between commits: `git diff <commit1> <commit2>`
   
 ## Adding or Removing Files
@@ -176,6 +177,141 @@ Once you’ve completed your work on a branch and are ready to integrate the cha
 1. Switch to the main branch: `git checkout main`
 2. Merge the other branch into the main branch: `git merge <branch_name>`
 
+## Reverting to a Previous Commit
+
+### Using `git checkout` (Detached HEAD)
+
+If you want to temporarily view or experiment with a previous commit, you can use `git checkout` to move to a specific commit. This will place you in a detached HEAD state, meaning you aren't on a branch but instead just inspecting that particular commit.
+
+```bash
+git checkout <commit_hash>
+```
+
+To exit the detached HEAD state and return to a branch, use the following command:
+
+```bash
+git checkout <branch_name>
+```
+
+For example, if you want to return to the main branch, run:
+
+```bash
+git checkout main
+```
+
+This will bring you back to your working branch, allowing you to continue making changes as usual.
+
+### How to revert to a previous commit using the `git reset` command
+
+To revert to a previous commit, you must first get the commit ID. To do that, run the command below:
+
+```bash
+git log --oneline
+```
+
+By example, in my terminal, I get the following output:
+
+```
+d8139ea (HEAD -> main) add task.txt
+ee61567 Update diff part on git.md
+53241ab (origin/main) Update git.md
+04082b6 add git.md
+90f8aef add good_practices.md
+37c01e8 First commit
+```
+
+To go back to the second commit, you run the `git reset` command followed by the commit ID. That is:
+
+```bash
+git reset <commit_id>
+```
+
+For example, to go back to the previous commit, you run:
+
+```bash
+git reset ee61567
+```
+
+Exercise: Open the `task.txt` file and add a new line `4. Research`. Add and commit the changes. Display the changes made in the file. Then, revert to the previous commit.
+
+By default, the `git reset` is a **soft** reset. It moves the HEAD to a specified commit without affecting your working directory or staging area. The changes stay in your files and are still staged for commit. Useful to uncommit changes but keep them for modification.
+
+With the `--hard` option, the reset will move the HEAD to a specified commit and discard all changes in the working directory and staging area. Useful to discard changes and start fresh.Be cautious as this **permanently deletes changes**.
+
+```bash	
+git reset --hard <commit_hash>
+```
+
+### How to revert to a previous commit using the `git revert ` command
+
+Unlike the git reset command, the git revert command creates a new commit for the reverted changes. The commit where we reverted from will not be deleted.
+
+```bash
+git revert <commit_id>
+```
+
+### When to use `git reset` or `git revert`
+
+You should use `git reset` when working on a local repository with changes yet to be pushed remotely. This is because running this command after pulling changes from the remote repo will alter the commit history of the project, leading to merge conflicts for everyone working on the project.
+
+`git reset` is a good option when you realize that the changes being made to a particular local branch should be somewhere else. You can reset and move to the desired branch without losing your file changes.
+
+`git revert` is a good option for reverting changes pushed to a remote repository. Since this command creates a new commit, you can safely get rid of your mistakes without rearranging the commit history for everyone else.
+
+## Resolving merge conflicts
+
+When working with branches, you might encounter merge conflicts. A **merge conflict** occurs when Git is unable to automatically combine changes from different branches. This usually happens when two changes affect the same part of a file.
+
+### How merge conflicts happen? 
+
+A conflict typically arises during a **merge** operation when two branches have modified the same lines of code or made changes to the same file. Git can't decide which version of the code should be kept, so it marks the file as conflicted.
+
+### Example of a conflict
+
+You and a teammate both modify the same line in a file in different branches.
+
+When merging, Git will identify the conflicting changes and mark the file as conflicted.
+
+
+### Steps to resolve a merge conflict
+
+1. **Identify the conflicted files**: Git will notify you of the conflicted files when you try to merge branches. You can also use `git status` to see which files have conflicts.
+2. **Open the conflicted file**: Git marks the conflict areas with special markers:
+   - `<<<<<<< HEAD`: your current branch's changes.
+   - `=======`: separates your changes from the other branch.
+   - `>>>>>>> branch_name`: changes from the branch you're merging.
+
+Example:
+
+```
+<<<<<<< HEAD
+Your changes
+=======
+Changes from the other branch
+>>>>>>> branch_name
+```
+
+3. **Resolve the conflict**: Manually edit the file to combine the changes or choose one version over the other. Remove the conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`) after resolving the issue. In VSCode, you can use the `Accept Current Change` or `Accept Incoming Change` options to resolve conflicts.
+4. **Stage the resolved file**: After editing the file, stage it to mark the conflict as resolved.
+
+```bash	
+git add <file_name>
+```
+
+5. **Complete the merge**: If you were merging, commit the changes to finalize the merge.
+
+```bash
+git commit 
+```
+
+Tips for Conflict Resolution:
+
+- Communicate with your team: If you're unsure about how to resolve a conflict, discuss it with the team to agree on the correct changes.
+- Use a merge tool: Git provides tools like git mergetool to help visualize and resolve conflicts in an easier way. You can also use external merge tools like VSCode.
+- Avoid large merges: Try to merge frequently to reduce the chance of complex conflicts. Keep branches small and focused.
+
 ## References
 
 - [Formation Git: Ou comment bien collaborer à plusieurs sur son code](https://viarezo.fr/assets/files/formations/2022_Git_slides.pdf)
+- [Git reverting to previous commit](https://www.freecodecamp.org/news/git-reverting-to-previous-commit-how-to-revert-to-last-commit/)
+
